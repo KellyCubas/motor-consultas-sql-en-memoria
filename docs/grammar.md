@@ -39,3 +39,9 @@ go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT activo, COUNT
 
 - `NestedLoopJoin`: implementacion de referencia que compara cada par de filas.
 - `HashJoin`: estrategia activa para condiciones de igualdad; indexa la tabla derecha por su clave de union.
+
+Ejemplo con varias fuentes CSV:
+
+```bash
+go run ./cmd/sqlmem consultar empleados=data/empleados.csv areas=data/areas.csv -- "SELECT empleados.nombre, areas.nombre FROM empleados INNER JOIN areas ON empleados.id = areas.id"
+```

@@ -52,3 +52,4 @@
 - Alternativas evaluadas: Usar solo nested-loop para todas las consultas.
 - Justificacion tecnica: Nested-loop compara cada fila izquierda con cada fila derecha; hash join crea un indice de la tabla derecha y evita esas comparaciones repetidas cuando la condicion es `=`.
 - Verificacion: las pruebas ejecutan un JOIN entre empleados y areas y comprueban las filas resultantes.
+- Comando de prueba: `go run ./cmd/sqlmem consultar empleados=data/empleados.csv areas=data/areas.csv -- "SELECT empleados.nombre, areas.nombre FROM empleados INNER JOIN areas ON empleados.id = areas.id ORDER BY empleados.nombre"`.
