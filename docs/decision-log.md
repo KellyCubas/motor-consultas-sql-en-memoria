@@ -31,3 +31,11 @@
 - Alternativas evaluadas: Interpretar la consulta directamente mientras se recorre la cadena.
 - Justificacion tecnica: El AST conserva la estructura y precedencia de la consulta, por lo que los operadores de ejecucion podran construirse despues sin mezclar analisis sintactico y acceso a datos.
 - Uso de IA, si aplica: Pendiente de completar por los integrantes segun el uso real.
+
+## Hito 3 - operadores de ejecucion
+
+- Hito y fecha: Hito 3, 2026-07-24.
+- Decision tomada: Usar una interfaz `Operator` con los metodos `Next`, `Columns` y `Close`.
+- Alternativas evaluadas: Ejecutar cada consulta construyendo slices intermedios en una unica funcion.
+- Justificacion tecnica: Los operadores encadenados conservan la evaluacion perezosa. `Filter` solicita filas a `Scan` y `Project` solicita filas a `Filter`, sin conocer como se implementa el operador inferior.
+- Uso de IA, si aplica: Pendiente de completar por los integrantes segun el uso real.
