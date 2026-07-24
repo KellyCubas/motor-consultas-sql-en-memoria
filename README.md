@@ -22,11 +22,47 @@ docs/        Gramatica y decisiones de diseno.
 
 ## Comandos de desarrollo
 
+Antes de entregar el proyecto, ejecutar los siguientes comandos desde la carpeta raiz del repositorio.
+
+### 1. Formatear todos los archivos Go
+
+En PowerShell:
+
+```powershell
+Get-ChildItem -Recurse -Filter *.go | ForEach-Object { gofmt -w $_.FullName }
+```
+
+Este comando busca todos los archivos con extension `.go` y aplica el formato estandar de Go. Debe ejecutarse primero porque puede corregir automaticamente sangrias, espacios y saltos de linea.
+
+> No usar `gofmt -w .`: `gofmt` recibe archivos, no directorios.
+
+### 2. Compilar todos los paquetes
+
 ```bash
 go build ./...
+```
+
+Compila el ejecutable y todos los paquetes internos. Si aparece un error, no se debe entregar hasta corregirlo.
+
+### 3. Ejecutar las pruebas
+
+```bash
 go test ./...
+```
+
+Ejecuta las pruebas de carga de CSV, parser, operadores, agregados y JOIN. Cada paquete debe terminar con `ok`.
+
+### 4. Revisar problemas comunes
+
+```bash
 go vet ./...
 ```
+
+Busca usos sospechosos del lenguaje que pueden compilar, pero provocar errores de comportamiento. El comando debe terminar sin mensajes.
+
+### Resultado esperado
+
+Los cuatro pasos deben finalizar sin errores. Si se corrigio codigo despues de ejecutar las pruebas, repetir desde el paso 1.
 
 ## Ejecucion actual
 
