@@ -73,3 +73,39 @@ func TestBuildOrdersAndLimitsRows(t *testing.T) {
 		t.Errorf("se esperaba io.EOF; se recibio %v", err)
 	}
 }
+
+func TestBuildGroupsAndAggregatesRows(t *testing.T) {
+	cat := catalog.New()
+	table, _ := catalog.LoadCSV("ventas", strings.NewReader("zona,monto\nNorte,10\nNorte,20\nSur,5\nSur,\n"))
+	_ = cat.Add(table)
+	statement, err := query.Parse("SELECT zona, COUNT(*), SUM(monto), AVG(monto), MIN(monto), MAX(monto) FROM ventas GROUP BY zona ORDER BY zona")
+	if err != nil {
+		t.Fatalf("Parse devolvio error: %v", err)
+	}
+	operator, err := Build(cat, statement)
+	if err != nil {
+		t.Fatalf("Build devolvio error: %v", err)
+	}
+	defer operator.Close()
+
+	rows := []catalog.Row{}
+	for {
+		row, err := operator.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatalf("Next devolvio error: %v", err)
+		}
+		rows = append(rows, row)
+	}
+	if len(rows) != 2 {
+		t.Fatalf("grupos = %d; se esperaban 2", len(rows))
+	}
+	if rows[0][0].Data != "Norte" || rows[0][1].Data != int64(2) || rows[0][2].Data != 30.0 || rows[0][3].Data != 15.0 || rows[0][4].Data != int64(10) || rows[0][5].Data != int64(20) {
+		t.Errorf("agregados Norte incorrectos: %#v", rows[0])
+	}
+	if rows[1][0].Data != "Sur" || rows[1][1].Data != int64(2) || rows[1][2].Data != 5.0 || rows[1][3].Data != 5.0 {
+		t.Errorf("agregados Sur incorrectos: %#v", rows[1])
+	}
+}

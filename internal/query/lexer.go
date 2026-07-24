@@ -115,6 +115,18 @@ func keywordKind(lexeme string) TokenKind {
 		return DescToken
 	case "LIMIT":
 		return LimitToken
+	case "GROUP":
+		return GroupToken
+	case "COUNT":
+		return CountToken
+	case "SUM":
+		return SumToken
+	case "AVG":
+		return AvgToken
+	case "MIN":
+		return MinToken
+	case "MAX":
+		return MaxToken
 	case "TRUE", "FALSE":
 		return BooleanToken
 	case "NULL":

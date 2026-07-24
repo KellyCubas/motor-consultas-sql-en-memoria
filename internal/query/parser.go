@@ -41,11 +41,12 @@ func (p *parser) parseQuery() (*Query, error) {
 	if p.match(StarToken) {
 		query.SelectAll = true
 	} else {
-		columns, err := p.parseColumns()
+		columns, aggregates, err := p.parseColumns()
 		if err != nil {
 			return nil, err
 		}
 		query.Columns = columns
+		query.Aggregates = aggregates
 	}
 
 	if _, err := p.expect(FromToken); err != nil {
@@ -63,6 +64,16 @@ func (p *parser) parseQuery() (*Query, error) {
 			return nil, err
 		}
 		query.Where = where
+	}
+	if p.match(GroupToken) {
+		if _, err := p.expect(ByToken); err != nil {
+			return nil, err
+		}
+		columns, _, err := p.parseColumns()
+		if err != nil {
+			return nil, err
+		}
+		query.GroupBy = columns
 	}
 	if p.match(OrderToken) {
 		if _, err := p.expect(ByToken); err != nil {
@@ -109,18 +120,45 @@ func (p *parser) parseOrderTerms() ([]OrderTerm, error) {
 	}
 }
 
-func (p *parser) parseColumns() ([]string, error) {
+func (p *parser) parseColumns() ([]string, []Aggregate, error) {
 	columns := make([]string, 0, 1)
+	aggregates := make([]Aggregate, 0)
 	for {
-		column, err := p.expect(IdentifierToken)
-		if err != nil {
-			return nil, err
+		if isAggregate(p.current().Kind) {
+			function := p.current().Kind
+			p.index++
+			if _, err := p.expect(LeftParenToken); err != nil {
+				return nil, nil, err
+			}
+			aggregate := Aggregate{Function: function}
+			if p.match(StarToken) {
+				aggregate.Star = true
+			} else {
+				column, err := p.expect(IdentifierToken)
+				if err != nil {
+					return nil, nil, err
+				}
+				aggregate.Column = column.Lexeme
+			}
+			if _, err := p.expect(RightParenToken); err != nil {
+				return nil, nil, err
+			}
+			aggregates = append(aggregates, aggregate)
+		} else {
+			column, err := p.expect(IdentifierToken)
+			if err != nil {
+				return nil, nil, err
+			}
+			columns = append(columns, column.Lexeme)
 		}
-		columns = append(columns, column.Lexeme)
 		if !p.match(CommaToken) {
-			return columns, nil
+			return columns, aggregates, nil
 		}
 	}
+}
+
+func isAggregate(kind TokenKind) bool {
+	return kind == CountToken || kind == SumToken || kind == AvgToken || kind == MinToken || kind == MaxToken
 }
 
 func (p *parser) parseOr() (Expression, error) {

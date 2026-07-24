@@ -23,6 +23,25 @@ func Build(catalog *catalog.Catalog, statement *query.Query) (Operator, error) {
 		}
 		operator = NewFilter(operator, statement.Where)
 	}
+	if len(statement.Aggregates) > 0 {
+		if len(statement.Columns) != len(statement.GroupBy) {
+			return nil, fmt.Errorf("las columnas seleccionadas deben aparecer en GROUP BY")
+		}
+		operator, err = NewAggregate(operator, statement.GroupBy, statement.Aggregates)
+		if err != nil {
+			return nil, err
+		}
+		if len(statement.OrderBy) > 0 {
+			operator, err = NewOrder(operator, statement.OrderBy)
+			if err != nil {
+				return nil, err
+			}
+		}
+		if statement.Limit != nil {
+			operator = NewLimit(operator, *statement.Limit)
+		}
+		return operator, nil
+	}
 
 	if statement.SelectAll {
 		operator, err = NewProject(operator, nil)

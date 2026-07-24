@@ -42,3 +42,5 @@
 - Alternativas evaluadas: Ordenar directamente dentro de `Scan` o limitar antes del ordenamiento.
 - Justificacion tecnica: Ordenar requiere conocer todas las filas candidatas; aplicar primero `LIMIT` produciria resultados incorrectos cuando la consulta incluye `ORDER BY`.
 - Comando de prueba: `go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT nombre, salario FROM empleados ORDER BY salario DESC LIMIT 2"`.
+- Extension: `GROUP BY` y los agregados `COUNT`, `SUM`, `AVG`, `MIN` y `MAX` materializan los grupos solo cuando es necesario.
+- Comando de prueba: `go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT activo, COUNT(*), AVG(salario) FROM empleados GROUP BY activo ORDER BY activo"`.

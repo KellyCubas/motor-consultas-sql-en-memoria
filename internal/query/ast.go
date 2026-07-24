@@ -3,12 +3,20 @@ package query
 
 // Query representa una consulta SELECT analizada.
 type Query struct {
-	SelectAll bool
-	Columns   []string
-	Table     string
-	Where     Expression
-	OrderBy   []OrderTerm
-	Limit     *int
+	SelectAll  bool
+	Columns    []string
+	Table      string
+	Where      Expression
+	OrderBy    []OrderTerm
+	Limit      *int
+	GroupBy    []string
+	Aggregates []Aggregate
+}
+
+type Aggregate struct {
+	Function TokenKind
+	Column   string
+	Star     bool
 }
 
 // OrderTerm describe una columna y su direccion de ordenamiento.

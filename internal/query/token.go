@@ -23,6 +23,12 @@ const (
 	AscToken
 	DescToken
 	LimitToken
+	GroupToken
+	CountToken
+	SumToken
+	AvgToken
+	MinToken
+	MaxToken
 	CommaToken
 	StarToken
 	LeftParenToken
@@ -69,6 +75,18 @@ func (k TokenKind) String() string {
 		return "DESC"
 	case LimitToken:
 		return "LIMIT"
+	case GroupToken:
+		return "GROUP"
+	case CountToken:
+		return "COUNT"
+	case SumToken:
+		return "SUM"
+	case AvgToken:
+		return "AVG"
+	case MinToken:
+		return "MIN"
+	case MaxToken:
+		return "MAX"
 	case CommaToken:
 		return ","
 	case StarToken:

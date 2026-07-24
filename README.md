@@ -5,7 +5,7 @@ Proyecto para el Taller de Programacion en Go. Implementa un subconjunto de SQL 
 ## Estado
 
 Hito 1 iniciado: carga de CSV, catalogo de tablas, inferencia de tipos y manejo de valores `NULL`.
-Hitos 1 a 3 completados. Hito 4 en progreso: `ORDER BY` y `LIMIT`.
+Hitos 1 a 4 completados: ordenamiento, limite, agrupacion y agregados.
 
 ## Estructura
 
@@ -57,10 +57,16 @@ Ordenar y limitar resultados:
 go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT nombre, salario FROM empleados ORDER BY salario DESC LIMIT 2"
 ```
 
+Agrupar resultados y usar agregados:
+
+```bash
+go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT activo, COUNT(*), AVG(salario) FROM empleados GROUP BY activo ORDER BY activo"
+```
+
 ## Alcance previsto
 
 1. Carga de CSV como tablas en memoria con catalogo, esquemas y tipos.
 2. Lexer, parser y AST para `SELECT ... FROM ... WHERE ...`.
 3. Operadores `Scan`, `Filter` y `Project` mediante el modelo Volcano. Completado.
-4. `ORDER BY`, `LIMIT`, `GROUP BY` y agregados. En progreso.
+4. `ORDER BY`, `LIMIT`, `GROUP BY` y agregados. Completado.
 5. `INNER JOIN` con nested-loop y hash join.
