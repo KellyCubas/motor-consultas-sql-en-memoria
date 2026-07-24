@@ -4,7 +4,7 @@ Proyecto para el Taller de Programacion en Go. Implementa un subconjunto de SQL 
 
 ## Estado
 
-El proyecto se encuentra en su fase inicial. El primer hito sera la carga de CSV, el catalogo de tablas y el manejo de tipos basicos.
+Hito 1 iniciado: carga de CSV, catalogo de tablas, inferencia de tipos y manejo de valores `NULL`.
 
 ## Estructura
 
@@ -30,7 +30,18 @@ go vet ./...
 ## Ejecucion actual
 
 ```bash
-go run ./cmd/sqlmem
+go run ./cmd/sqlmem cargar empleados data/empleados.csv
+```
+
+Salida esperada:
+
+```text
+Tabla "empleados" cargada: 3 filas
+- id: entero
+- nombre: texto
+- edad: entero
+- salario: decimal
+- activo: booleano
 ```
 
 ## Alcance previsto
