@@ -18,6 +18,11 @@ const (
 	WhereToken
 	AndToken
 	OrToken
+	OrderToken
+	ByToken
+	AscToken
+	DescToken
+	LimitToken
 	CommaToken
 	StarToken
 	LeftParenToken
@@ -54,6 +59,16 @@ func (k TokenKind) String() string {
 		return "AND"
 	case OrToken:
 		return "OR"
+	case OrderToken:
+		return "ORDER"
+	case ByToken:
+		return "BY"
+	case AscToken:
+		return "ASC"
+	case DescToken:
+		return "DESC"
+	case LimitToken:
+		return "LIMIT"
 	case CommaToken:
 		return ","
 	case StarToken:

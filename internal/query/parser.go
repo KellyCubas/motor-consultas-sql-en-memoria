@@ -1,6 +1,9 @@
 package query
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // Parse analiza una consulta SQL y devuelve su AST.
 func Parse(input string) (*Query, error) {
@@ -61,8 +64,49 @@ func (p *parser) parseQuery() (*Query, error) {
 		}
 		query.Where = where
 	}
+	if p.match(OrderToken) {
+		if _, err := p.expect(ByToken); err != nil {
+			return nil, err
+		}
+		terms, err := p.parseOrderTerms()
+		if err != nil {
+			return nil, err
+		}
+		query.OrderBy = terms
+	}
+	if p.match(LimitToken) {
+		token, err := p.expect(NumberToken)
+		if err != nil {
+			return nil, err
+		}
+		limit, err := strconv.Atoi(token.Lexeme)
+		if err != nil || limit < 0 || token.Lexeme != strconv.Itoa(limit) {
+			return nil, fmt.Errorf("LIMIT invalido en la posicion %d", token.Position)
+		}
+		query.Limit = &limit
+	}
 
 	return query, nil
+}
+
+func (p *parser) parseOrderTerms() ([]OrderTerm, error) {
+	terms := make([]OrderTerm, 0, 1)
+	for {
+		column, err := p.expect(IdentifierToken)
+		if err != nil {
+			return nil, err
+		}
+		term := OrderTerm{Column: column.Lexeme}
+		if p.match(DescToken) {
+			term.Descending = true
+		} else {
+			p.match(AscToken)
+		}
+		terms = append(terms, term)
+		if !p.match(CommaToken) {
+			return terms, nil
+		}
+	}
 }
 
 func (p *parser) parseColumns() ([]string, error) {

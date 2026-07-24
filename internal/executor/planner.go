@@ -16,6 +16,7 @@ func Build(catalog *catalog.Catalog, statement *query.Query) (Operator, error) {
 	}
 
 	var operator Operator = NewScan(table)
+	var err error
 	if statement.Where != nil {
 		if err := validateExpression(statement.Where, table.Columns); err != nil {
 			return nil, err
@@ -24,9 +25,23 @@ func Build(catalog *catalog.Catalog, statement *query.Query) (Operator, error) {
 	}
 
 	if statement.SelectAll {
-		return NewProject(operator, nil)
+		operator, err = NewProject(operator, nil)
+	} else {
+		operator, err = NewProject(operator, statement.Columns)
 	}
-	return NewProject(operator, statement.Columns)
+	if err != nil {
+		return nil, err
+	}
+	if len(statement.OrderBy) > 0 {
+		operator, err = NewOrder(operator, statement.OrderBy)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if statement.Limit != nil {
+		operator = NewLimit(operator, *statement.Limit)
+	}
+	return operator, nil
 }
 
 func validateExpression(expression query.Expression, columns []catalog.Column) error {

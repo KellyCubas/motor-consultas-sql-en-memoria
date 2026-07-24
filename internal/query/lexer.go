@@ -105,6 +105,16 @@ func keywordKind(lexeme string) TokenKind {
 		return AndToken
 	case "OR":
 		return OrToken
+	case "ORDER":
+		return OrderToken
+	case "BY":
+		return ByToken
+	case "ASC":
+		return AscToken
+	case "DESC":
+		return DescToken
+	case "LIMIT":
+		return LimitToken
 	case "TRUE", "FALSE":
 		return BooleanToken
 	case "NULL":

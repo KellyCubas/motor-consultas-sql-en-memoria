@@ -5,7 +5,7 @@ Proyecto para el Taller de Programacion en Go. Implementa un subconjunto de SQL 
 ## Estado
 
 Hito 1 iniciado: carga de CSV, catalogo de tablas, inferencia de tipos y manejo de valores `NULL`.
-Hito 3 iniciado: ejecucion de `SELECT`, `WHERE` y proyeccion de columnas mediante operadores iteradores.
+Hitos 1 a 3 completados. Hito 4 en progreso: `ORDER BY` y `LIMIT`.
 
 ## Estructura
 
@@ -13,7 +13,7 @@ Hito 3 iniciado: ejecucion de `SELECT`, `WHERE` y proyeccion de columnas mediant
 cmd/sqlmem/  Punto de entrada del CLI o REPL.
 internal/    Implementacion interna del motor.
 data/        Archivos CSV de ejemplo.
-docs/        Gramatica, decisiones de diseno y declaracion de IA.
+docs/        Gramatica y decisiones de diseno.
 ```
 
 ## Requisitos
@@ -51,10 +51,16 @@ Consultar los datos cargados desde un CSV:
 go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT nombre, salario FROM empleados WHERE activo = true AND edad >= 25"
 ```
 
+Ordenar y limitar resultados:
+
+```bash
+go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT nombre, salario FROM empleados ORDER BY salario DESC LIMIT 2"
+```
+
 ## Alcance previsto
 
 1. Carga de CSV como tablas en memoria con catalogo, esquemas y tipos.
 2. Lexer, parser y AST para `SELECT ... FROM ... WHERE ...`.
-3. Operadores `Scan`, `Filter` y `Project` mediante el modelo Volcano. En progreso.
-4. `ORDER BY`, `LIMIT`, `GROUP BY` y agregados.
+3. Operadores `Scan`, `Filter` y `Project` mediante el modelo Volcano. Completado.
+4. `ORDER BY`, `LIMIT`, `GROUP BY` y agregados. En progreso.
 5. `INNER JOIN` con nested-loop y hash join.

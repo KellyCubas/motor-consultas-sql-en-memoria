@@ -7,6 +7,14 @@ type Query struct {
 	Columns   []string
 	Table     string
 	Where     Expression
+	OrderBy   []OrderTerm
+	Limit     *int
+}
+
+// OrderTerm describe una columna y su direccion de ordenamiento.
+type OrderTerm struct {
+	Column     string
+	Descending bool
 }
 
 // Expression es un nodo del arbol de condiciones WHERE.

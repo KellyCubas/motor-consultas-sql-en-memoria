@@ -51,3 +51,16 @@ func TestParseRejectsInvalidQueries(t *testing.T) {
 		})
 	}
 }
+
+func TestParseOrderByAndLimit(t *testing.T) {
+	query, err := Parse("SELECT nombre FROM empleados ORDER BY nombre DESC LIMIT 2")
+	if err != nil {
+		t.Fatalf("Parse devolvio error: %v", err)
+	}
+	if len(query.OrderBy) != 1 || !query.OrderBy[0].Descending {
+		t.Fatalf("ORDER BY no se analizo correctamente: %#v", query.OrderBy)
+	}
+	if query.Limit == nil || *query.Limit != 2 {
+		t.Fatalf("LIMIT no se analizo correctamente: %#v", query.Limit)
+	}
+}

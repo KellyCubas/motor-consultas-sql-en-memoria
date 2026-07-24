@@ -51,3 +51,25 @@ func TestBuildRejectsUnknownColumns(t *testing.T) {
 		t.Fatal("Build permitio una columna inexistente")
 	}
 }
+
+func TestBuildOrdersAndLimitsRows(t *testing.T) {
+	cat := catalog.New()
+	table, _ := catalog.LoadCSV("empleados", strings.NewReader("nombre,edad\nAna,28\nBeto,17\nCarla,35\n"))
+	_ = cat.Add(table)
+	statement, _ := query.Parse("SELECT nombre FROM empleados ORDER BY nombre DESC LIMIT 2")
+	operator, err := Build(cat, statement)
+	if err != nil {
+		t.Fatalf("Build devolvio error: %v", err)
+	}
+	defer operator.Close()
+
+	for _, want := range []string{"Carla", "Beto"} {
+		row, err := operator.Next()
+		if err != nil || row[0].Data != want {
+			t.Fatalf("fila = %#v, %v; se esperaba %q", row, err, want)
+		}
+	}
+	if _, err := operator.Next(); err != io.EOF {
+		t.Errorf("se esperaba io.EOF; se recibio %v", err)
+	}
+}
