@@ -69,4 +69,4 @@ go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT activo, COUNT
 2. Lexer, parser y AST para `SELECT ... FROM ... WHERE ...`.
 3. Operadores `Scan`, `Filter` y `Project` mediante el modelo Volcano. Completado.
 4. `ORDER BY`, `LIMIT`, `GROUP BY` y agregados. Completado.
-5. `INNER JOIN` con nested-loop y hash join.
+5. `INNER JOIN` con nested-loop y hash join. En progreso: las estrategias estan implementadas en el motor; falta exponer la carga de multiples CSV desde el CLI.

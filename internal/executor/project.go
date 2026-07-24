@@ -2,6 +2,7 @@ package executor
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/KellyCubas/motor-consultas-sql-en-memoria/internal/catalog"
 )
@@ -56,10 +57,20 @@ func (p *Project) Close() error {
 }
 
 func findColumn(columns []catalog.Column, name string) (int, catalog.Column, error) {
+	match := -1
 	for index, column := range columns {
 		if equalName(column.Name, name) {
 			return index, column, nil
 		}
+		if !strings.Contains(name, ".") && strings.HasSuffix(strings.ToLower(column.Name), "."+strings.ToLower(name)) {
+			if match >= 0 {
+				return 0, catalog.Column{}, fmt.Errorf("la columna %q es ambigua", name)
+			}
+			match = index
+		}
+	}
+	if match >= 0 {
+		return match, columns[match], nil
 	}
 	return 0, catalog.Column{}, fmt.Errorf("la columna %q no existe", name)
 }

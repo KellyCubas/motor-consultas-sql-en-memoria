@@ -17,8 +17,18 @@ func Build(catalog *catalog.Catalog, statement *query.Query) (Operator, error) {
 
 	var operator Operator = NewScan(table)
 	var err error
+	if statement.Join != nil {
+		right, ok := catalog.Table(statement.Join.Table)
+		if !ok {
+			return nil, fmt.Errorf("la tabla %q no existe", statement.Join.Table)
+		}
+		operator, err = NewHashJoin(operator, NewScan(right), table.Name, right.Name, statement.Join.Condition)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if statement.Where != nil {
-		if err := validateExpression(statement.Where, table.Columns); err != nil {
+		if err := validateExpression(statement.Where, operator.Columns()); err != nil {
 			return nil, err
 		}
 		operator = NewFilter(operator, statement.Where)

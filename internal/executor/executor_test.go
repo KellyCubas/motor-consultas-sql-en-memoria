@@ -109,3 +109,28 @@ func TestBuildGroupsAndAggregatesRows(t *testing.T) {
 		t.Errorf("agregados Sur incorrectos: %#v", rows[1])
 	}
 }
+
+func TestBuildExecutesInnerJoin(t *testing.T) {
+	cat := catalog.New()
+	empleados, _ := catalog.LoadCSV("empleados", strings.NewReader("nombre,area_id\nAna,1\nBeto,2\n"))
+	areas, _ := catalog.LoadCSV("areas", strings.NewReader("id,nombre\n1,Ventas\n2,Soporte\n"))
+	_ = cat.Add(empleados)
+	_ = cat.Add(areas)
+	statement, err := query.Parse("SELECT empleados.nombre, areas.nombre FROM empleados INNER JOIN areas ON empleados.area_id = areas.id ORDER BY empleados.nombre")
+	if err != nil {
+		t.Fatalf("Parse devolvio error: %v", err)
+	}
+	operator, err := Build(cat, statement)
+	if err != nil {
+		t.Fatalf("Build devolvio error: %v", err)
+	}
+	defer operator.Close()
+	row, err := operator.Next()
+	if err != nil || row[0].Data != "Ana" || row[1].Data != "Ventas" {
+		t.Fatalf("primera fila incorrecta: %#v, %v", row, err)
+	}
+	row, err = operator.Next()
+	if err != nil || row[0].Data != "Beto" || row[1].Data != "Soporte" {
+		t.Fatalf("segunda fila incorrecta: %#v, %v", row, err)
+	}
+}

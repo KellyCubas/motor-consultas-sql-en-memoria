@@ -44,3 +44,11 @@
 - Comando de prueba: `go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT nombre, salario FROM empleados ORDER BY salario DESC LIMIT 2"`.
 - Extension: `GROUP BY` y los agregados `COUNT`, `SUM`, `AVG`, `MIN` y `MAX` materializan los grupos solo cuando es necesario.
 - Comando de prueba: `go run ./cmd/sqlmem consultar empleados data/empleados.csv "SELECT activo, COUNT(*), AVG(salario) FROM empleados GROUP BY activo ORDER BY activo"`.
+
+## Hito 5 - INNER JOIN
+
+- Hito y fecha: Hito 5, 2026-07-24.
+- Decision tomada: Implementar nested-loop join como referencia y usar hash join para condiciones de igualdad.
+- Alternativas evaluadas: Usar solo nested-loop para todas las consultas.
+- Justificacion tecnica: Nested-loop compara cada fila izquierda con cada fila derecha; hash join crea un indice de la tabla derecha y evita esas comparaciones repetidas cuando la condicion es `=`.
+- Verificacion: las pruebas ejecutan un JOIN entre empleados y areas y comprueban las filas resultantes.

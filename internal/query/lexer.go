@@ -90,7 +90,7 @@ func isIdentifierStart(char rune) bool {
 }
 
 func isIdentifierPart(char rune) bool {
-	return isIdentifierStart(char) || unicode.IsDigit(char)
+	return isIdentifierStart(char) || unicode.IsDigit(char) || char == '.'
 }
 
 func keywordKind(lexeme string) TokenKind {
@@ -127,6 +127,12 @@ func keywordKind(lexeme string) TokenKind {
 		return MinToken
 	case "MAX":
 		return MaxToken
+	case "INNER":
+		return InnerToken
+	case "JOIN":
+		return JoinToken
+	case "ON":
+		return OnToken
 	case "TRUE", "FALSE":
 		return BooleanToken
 	case "NULL":

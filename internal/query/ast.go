@@ -11,6 +11,12 @@ type Query struct {
 	Limit      *int
 	GroupBy    []string
 	Aggregates []Aggregate
+	Join       *Join
+}
+
+type Join struct {
+	Table     string
+	Condition Expression
 }
 
 type Aggregate struct {

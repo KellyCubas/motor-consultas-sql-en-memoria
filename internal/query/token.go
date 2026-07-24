@@ -29,6 +29,9 @@ const (
 	AvgToken
 	MinToken
 	MaxToken
+	InnerToken
+	JoinToken
+	OnToken
 	CommaToken
 	StarToken
 	LeftParenToken
@@ -87,6 +90,12 @@ func (k TokenKind) String() string {
 		return "MIN"
 	case MaxToken:
 		return "MAX"
+	case InnerToken:
+		return "INNER"
+	case JoinToken:
+		return "JOIN"
+	case OnToken:
+		return "ON"
 	case CommaToken:
 		return ","
 	case StarToken:

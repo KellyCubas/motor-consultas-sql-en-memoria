@@ -64,3 +64,13 @@ func TestParseOrderByAndLimit(t *testing.T) {
 		t.Fatalf("LIMIT no se analizo correctamente: %#v", query.Limit)
 	}
 }
+
+func TestParseInnerJoin(t *testing.T) {
+	query, err := Parse("SELECT empleados.nombre FROM empleados INNER JOIN areas ON empleados.area_id = areas.id")
+	if err != nil {
+		t.Fatalf("Parse devolvio error: %v", err)
+	}
+	if query.Join == nil || query.Join.Table != "areas" {
+		t.Fatalf("JOIN no se analizo correctamente: %#v", query.Join)
+	}
+}

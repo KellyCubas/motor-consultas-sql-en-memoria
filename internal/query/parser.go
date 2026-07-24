@@ -57,6 +57,23 @@ func (p *parser) parseQuery() (*Query, error) {
 		return nil, err
 	}
 	query.Table = table.Lexeme
+	if p.match(InnerToken) {
+		if _, err := p.expect(JoinToken); err != nil {
+			return nil, err
+		}
+		right, err := p.expect(IdentifierToken)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := p.expect(OnToken); err != nil {
+			return nil, err
+		}
+		condition, err := p.parseComparison()
+		if err != nil {
+			return nil, err
+		}
+		query.Join = &Join{Table: right.Lexeme, Condition: condition}
+	}
 
 	if p.match(WhereToken) {
 		where, err := p.parseOr()
