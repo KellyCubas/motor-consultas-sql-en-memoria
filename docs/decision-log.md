@@ -23,3 +23,11 @@
 - Alternativas evaluadas: Guardar todas las celdas como texto y convertirlas durante cada consulta.
 - Justificacion tecnica: Convertir los valores al cargar el CSV valida los datos una sola vez y permite que los futuros operadores comparen valores segun su tipo real.
 - Uso de IA, si aplica: Pendiente de completar por los integrantes segun el uso real.
+
+## Hito 2 - analisis de consultas
+
+- Hito y fecha: Hito 2, 2026-07-24.
+- Decision tomada: Separar lexer, parser y AST en el paquete `internal/query`.
+- Alternativas evaluadas: Interpretar la consulta directamente mientras se recorre la cadena.
+- Justificacion tecnica: El AST conserva la estructura y precedencia de la consulta, por lo que los operadores de ejecucion podran construirse despues sin mezclar analisis sintactico y acceso a datos.
+- Uso de IA, si aplica: Pendiente de completar por los integrantes segun el uso real.
